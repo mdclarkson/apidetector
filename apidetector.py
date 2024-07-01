@@ -4,6 +4,7 @@ import argparse
 import random
 import string
 import difflib
+from security import safe_requests
  
 
 # ASCII Art for APIDetector
@@ -20,7 +21,7 @@ ascii_art = """
 def test_endpoint(url, error_content, verbose, user_agent):
     headers = {'User-Agent': user_agent}
     try:
-        response = requests.get(url, headers=headers, timeout=30, allow_redirects=False)
+        response = safe_requests.get(url, headers=headers, timeout=30, allow_redirects=False)
         if response.status_code == 200:
             # Calculate similarity with the error content
             similarity = difflib.SequenceMatcher(None, error_content, response.text).ratio()
@@ -48,7 +49,7 @@ def test_subdomain_endpoints(subdomain, common_endpoints, mixed_mode, verbose, u
     for protocol in protocols:
         error_url = f"{protocol}{subdomain}/{random_path}"
         try:
-            error_response = requests.get(error_url, headers={'User-Agent': user_agent}, timeout=15)
+            error_response = safe_requests.get(error_url, headers={'User-Agent': user_agent}, timeout=15)
             error_content = error_response.text
             break  # Assuming the same error content for all protocols
         except requests.RequestException:
@@ -59,8 +60,8 @@ def test_subdomain_endpoints(subdomain, common_endpoints, mixed_mode, verbose, u
         test_url1 = f"{protocol}{subdomain}/api/swagger/v3/api-docs"
         test_url2 = f"{protocol}{subdomain}/api/swagger/v2/api-docs"
         try:
-            response1 = requests.get(test_url1, headers={'User-Agent': user_agent}, timeout=15)
-            response2 = requests.get(test_url2, headers={'User-Agent': user_agent}, timeout=15)
+            response1 = safe_requests.get(test_url1, headers={'User-Agent': user_agent}, timeout=15)
+            response2 = safe_requests.get(test_url2, headers={'User-Agent': user_agent}, timeout=15)
     
             if response1.status_code == 200 and response2.status_code == 200:
                 # Calculate similarity
@@ -77,7 +78,7 @@ def test_subdomain_endpoints(subdomain, common_endpoints, mixed_mode, verbose, u
     for protocol in protocols:
         error_url = f"{protocol}{subdomain}/{random_path}"
         try:
-            error_response = requests.get(error_url, headers={'User-Agent': user_agent}, timeout=15)
+            error_response = safe_requests.get(error_url, headers={'User-Agent': user_agent}, timeout=15)
             error_content = error_response.text
             break  # Assuming the same error content for all protocols
         except requests.RequestException:
