@@ -1,9 +1,9 @@
 import requests
 import concurrent.futures
 import argparse
-import random
 import string
 import difflib
+import secrets
  
 
 # ASCII Art for APIDetector
@@ -35,7 +35,7 @@ def test_endpoint(url, error_content, verbose, user_agent):
 
 # Random string to test invalid paths
 def generate_random_string(length=21):
-    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+    return ''.join(secrets.SystemRandom().choices(string.ascii_letters + string.digits, k=length))
 
 # Function to test all endpoints for a given subdomain
 def test_subdomain_endpoints(subdomain, common_endpoints, mixed_mode, verbose, user_agent):
